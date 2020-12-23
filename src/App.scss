@@ -1,0 +1,27 @@
+$white: #FFF00F;
+
+  html, body, ul {
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  .App {
+    div {
+      margin-top: 10px;
+    }
+  }
+
+  a {
+    color:black;
+    &.selected {
+      text-decoration: none;
+    }
+  }
+
+  .Home {
+    color:cadetblue;
+  }
+  .Login {
+    color:darkgreen;
+  }
