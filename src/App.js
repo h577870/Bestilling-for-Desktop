@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,35 +6,42 @@ import {
   NavLink,
   Redirect
 } from 'react-router-dom'
-import Auth from './components/Auth'
-import Login from './components/Login'
-import Home from './components/Home'
-import Application from './components/Application'
+import Login from './Login'
+import Home from './Home'
+import Application from './Application'
 import './App.scss';
+import { AuthContext, useAuth } from "./context/auth";
 
 function App() {
+  const sessionstorage = window.sessionStorage
+  const existingTokens = JSON.parse(sessionstorage.getItem("jwttoken"))
+  const [authTokens, setAuthTokens] = useState(existingTokens)
+
+  const setTokens = (data) => {
+    sessionstorage.setItem("jwttoken", JSON.stringify(data))
+    setAuthTokens(data)
+  }
+
   return (
     <div className="App">
+      <AuthContext.Provider value={{authTokens, setAuthTokens: setTokens}}>
       <Router>
         <nav>
           <ul>
             <li>
-              <NavLink
-                exact to="/home"
+              <NavLink exact to="/home"
                 activeClassName="selected">
                 Hjem
               </NavLink>
             </li>
             <li>
-              <NavLink
-                exact to="/login"
+              <NavLink exact to="/login"
                 activeClassName="selected">
                 Logg Inn
                 </NavLink>
             </li>
             <li>
-              <NavLink
-                exact to="/application"
+              <NavLink exact to="/app"
                 activeClassName="selected">
                 Applikasjon
                 </NavLink>
@@ -46,19 +53,24 @@ function App() {
           <Route path="/login" component={ Login }/>
           <PrivateRoute path="/app" component={ Application }/>
         </Switch>
-      </Router>
+        </Router>
+        </AuthContext.Provider>
     </div>
   );
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={
-    (props) => (
-      Auth.loggedIn() === true
-        ? <Component {...props} />
-        : <Redirect to='/login' />
-    )} />
-)
+function PrivateRoute({ component: Component, ...rest }) {
+
+  const { authTokens } = useAuth()
+    return (
+    <Route {...rest } render = {props => (
+        authTokens
+          ? <Component {...props} />
+          : <Redirect to={{
+            pathname: "/login", state: { referer: props.location}
+          }} />
+    )} />)
+}
 
 
 
