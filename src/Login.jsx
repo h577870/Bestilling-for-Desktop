@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {
-    Redirect
+    useHistory
 } from 'react-router-dom'
 import { useAuth } from './context/auth.js'
 const axios = require('axios').default
@@ -8,50 +8,68 @@ const axios = require('axios').default
 function Login(props) {
     
     const [isLoggedIn, setLoggedIn] = useState(false)
-    const [isError, setIsError] = useState(false)
+    const [isError, setIsError] = useState("")
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const { setAuthTokens } = useAuth() 
-    
-    async function requestLogin() {
-        const url = "localhost:8080/"
-        let response
-        try {
-            response = await axios.post(
-                `${url}bruker/logginn`,
+    const { setAuthTokens } = useAuth()
+    const history = useHistory()
+    /*
+    TODO: Responsen behandles ikke riktig og man blir dermed ikke redirecte
+    */
+    function requestLogin() {
+        axios.post(
+            "http://localhost:8080/bruker/logginn",
+            JSON.stringify(
                 {
                     brukernavn: userName,
                     passord: password
                 }
-            )
-        }
-        catch (error) {
-            console.error(error)
-        }
-        return response
+            ),
+            {
+                headers: {'Content-Type':'application/json'}
+            }
+        ).then(function (response) {
+            userLogin(response)
+        }).catch(function (error) {
+            console.warn(error)
+            setIsError(error)
+        })
     }
 
-    async function userLogin() {
+    /*
+    TODO: userLogin blir aldri kalt fra requestLogin?
+    */
+
+    function userLogin(response) {
         if (isLoggedIn) {
-            return <Redirect to="/app"/>
+            history.push("/app")
         }
-        const response = await requestLogin()
-        switch (response.status) {
-            case 200:
-                setAuthTokens(response.headers["jwttoken"]);
+        switch (response.statusText) {
+            /*
+            Setter token på Authorization-header for alle fremtidige requests.
+            */
+            case "OK":
+                const token = response.headers["jwt"];
+                if (token != null) {
+                    axios.defaults.headers.common["Authorization"] = token
+                } else {
+                    delete axios.defaults.headers.common["Authorization"]
+                }
+                setAuthTokens(token);
                 setLoggedIn(true);
-                <Redirect to="/app" />;
+                history.push("/app");
                 break;
-            case 401:
-                setIsError(true);
-                <Redirect to="/login" />;
-                break;
-            default:
-                setIsError(true);
-                <Redirect to="/login" />;
-                break;
-        }
             
+            case "Unauthorized":
+                setIsError("401");
+                history.push("/login");
+                break;
+            
+            default:
+                setIsError("annen feil");
+                history.push("/login");
+                break;
+        }  
     }
         return (
             <div className="loginForm">
@@ -65,9 +83,10 @@ function Login(props) {
                         onChange={e => { setPassword(e.target.value) }}></input>
                     <button
                         className="loginbutton"
-                        onClick={userLogin}>
+                        onClick={requestLogin}>
                         Logg inn
                     </button>
+                    <p>{isError}</p>
                 </form>
             </div>
         )
