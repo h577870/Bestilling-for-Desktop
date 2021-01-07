@@ -1,0 +1,34 @@
+// Override default variables before the import
+$body-bg: #000;
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
+
+
+.app-header {
+    display:flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+    .logout-button {
+        margin-left: 1000px; // =P
+    }
+    .login-button {
+        margin-left: 1000px;
+    }
+}
+
+.app-body {
+    display: flex;
+    flex-direction: row;
+
+    .task-overview {
+        flex-direction: column;
+    }
+    .task-info {
+        flex-direction: column;
+    }
+    .task-options {
+        flex-direction: column;
+    }
+}

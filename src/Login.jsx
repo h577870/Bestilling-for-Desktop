@@ -17,59 +17,50 @@ function Login(props) {
     TODO: Responsen behandles ikke riktig og man blir dermed ikke redirecte
     */
     function requestLogin() {
-        axios.post(
-            "http://localhost:8080/bruker/logginn",
-            JSON.stringify(
-                {
-                    brukernavn: userName,
-                    passord: password
-                }
-            ),
-            {
-                headers: {'Content-Type':'application/json'}
-            }
-        ).then(function (response) {
-            userLogin(response)
-        }).catch(function (error) {
-            console.warn(error)
-            setIsError(error)
-        })
-    }
-
-    /*
-    TODO: userLogin blir aldri kalt fra requestLogin?
-    */
-
-    function userLogin(response) {
         if (isLoggedIn) {
             history.push("/app")
         }
-        switch (response.statusText) {
-            /*
-            Setter token på Authorization-header for alle fremtidige requests.
-            */
-            case "OK":
-                const token = response.headers["jwt"];
-                if (token != null) {
-                    axios.defaults.headers.common["Authorization"] = token
-                } else {
-                    delete axios.defaults.headers.common["Authorization"]
+        else {
+            axios.post(
+                "http://localhost:8080/bruker/logginn",
+                JSON.stringify({ brukernavn: userName, passord: password }),
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
-                setAuthTokens(token);
-                setLoggedIn(true);
-                history.push("/app");
-                break;
+            ).then(function (response) {
+                switch (response.status) {
+                    /*
+                    Setter token på Authorization-header for alle fremtidige requests.
+                    */
+                    case 200:
+                        const token = response.headers["jwt"];
+                        if (token != null) {
+                            axios.defaults.headers.common["Authorization"] = token
+                        } else {
+                            delete axios.defaults.headers.common["Authorization"]
+                        }
+                        setAuthTokens(token);
+                        setLoggedIn(true);
+                        history.push("/app");
+                        break;
             
-            case "Unauthorized":
-                setIsError("401");
-                history.push("/login");
-                break;
+                    case 401:
+                        setIsError("401");
+                        history.push("/login");
+                        break;
             
-            default:
-                setIsError("annen feil");
-                history.push("/login");
-                break;
-        }  
+                    default:
+                        setIsError("annen feil");
+                        history.push("/login");
+                        break;
+                }
+            }).catch(function (error) {
+                console.warn(error)
+                setIsError(error)
+            })
+        }
     }
         return (
             <div className="loginForm">
