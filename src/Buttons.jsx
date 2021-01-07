@@ -1,15 +1,12 @@
-import {useAuth} from './context/auth'
+import AuthContext from './context/auth'
+import { useContext } from 'react'
 
 export function LogoutButton(props) {
 
-    const { setAuthTokens } = useAuth();
-
-    function setToken() {
-        setAuthTokens()
-    }
+    const { logout } = useContext(AuthContext)
 
     return (
-        <button class="logout-button" onClick={setToken}>
+        <button className="logout-button" onClick={logout}>
             Logg ut
         </button>
     )
@@ -17,7 +14,7 @@ export function LogoutButton(props) {
 
 export function LoginButton(props) {
     return (
-        <button class="login-button" onClick={props.handleClick}>
+        <button className="login-button" onClick={props.handleClick}>
             Logg inn
         </button>
     )

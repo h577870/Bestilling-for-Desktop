@@ -1,86 +1,35 @@
-import React, { useState } from 'react'
-import {
-    useHistory
-} from 'react-router-dom'
-import { useAuth } from './context/auth.js'
-const axios = require('axios').default
+import React, { useState, useContext } from 'react'
+import AuthContext from './context/auth.js'
 
 function Login(props) {
     
-    const [isLoggedIn, setLoggedIn] = useState(false)
-    const [isError, setIsError] = useState("")
-    const [userName, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const { setAuthTokens } = useAuth()
-    const history = useHistory()
-    /*
-    TODO: Responsen behandles ikke riktig og man blir dermed ikke redirecte
-    */
-    function requestLogin() {
-        if (isLoggedIn) {
-            history.push("/app")
-        }
-        else {
-            axios.post(
-                "http://localhost:8080/bruker/logginn",
-                JSON.stringify({ brukernavn: userName, passord: password }),
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            ).then(function (response) {
-                switch (response.status) {
-                    /*
-                    Setter token på Authorization-header for alle fremtidige requests.
-                    */
-                    case 200:
-                        const token = response.headers["jwt"];
-                        if (token != null) {
-                            axios.defaults.headers.common["Authorization"] = token
-                        } else {
-                            delete axios.defaults.headers.common["Authorization"]
-                        }
-                        setAuthTokens(token);
-                        setLoggedIn(true);
-                        history.push("/app");
-                        break;
-            
-                    case 401:
-                        setIsError("401");
-                        history.push("/login");
-                        break;
-            
-                    default:
-                        setIsError("annen feil");
-                        history.push("/login");
-                        break;
-                }
-            }).catch(function (error) {
-                console.warn(error)
-                setIsError(error)
-            })
-        }
+    const [userName, setUsername] = useState("") //Form
+    const [password, setPassword] = useState("") //Form
+    const { login, hasLoginError } = useContext(AuthContext)
+    
+    const onSubmit = e => {
+        e.preventDefault()
+        login(userName, password)
     }
-        return (
-            <div className="loginForm">
-                <h2>Innlogging</h2>
-                <form>
-                    <p className="username">Brukernavn:</p>
-                    <input type="text" value={userName}
-                        onChange={e => { setUsername(e.target.value) }}></input>
-                    <p className="password">Passord:</p>
-                    <input type="password" value={password}
-                        onChange={e => { setPassword(e.target.value) }}></input>
-                    <button
-                        className="loginbutton"
-                        onClick={requestLogin}>
-                        Logg inn
-                    </button>
-                    <p>{isError}</p>
-                </form>
-            </div>
-        )
+
+    return (
+        <div className="loginForm">
+            <h2>Innlogging</h2>
+            <form onSubmit={onSubmit}>
+                {hasLoginError && <p>Feil brukernavn eller passord.</p>}
+                <p className="username">Brukernavn:</p>
+                <input type="text" value={userName} autoComplete="username"
+                    onChange={e => { setUsername(e.target.value) }}></input>
+                <p className="password">Passord:</p>
+                <input type="password" value={password} autoComplete="current-password"
+                    onChange={e => { setPassword(e.target.value) }}></input>
+                <button
+                    className="loginbutton">
+                    Logg inn
+                </button>
+            </form>
+        </div>
+    )
 }
 
 
