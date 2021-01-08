@@ -13,11 +13,10 @@ import Application from './Application'
 import AuthContext from './context/auth'
 import { fetchLogin } from './Requests'
 
-const reducer = async (state, action) => {
+const reducer = (state, action) => {
     switch (action.type) {
       case 'login': {
-        const { username, password } = action.payload
-        const response = await fetchLogin(username, password) 
+        const { username, response } = action.payload
         if (response.ok) {
           console.log("logged in.")
           return {
@@ -55,8 +54,9 @@ const App = () => {
 
   const [state, dispatch] = useReducer(reducer, init_state)
 
-  const login = (username, password) => {
-    dispatch({ type: 'login', payload: { username, password } })
+  const login = async (username, password) => {
+    const response = await fetchLogin(username, password)
+    dispatch({ type: 'login', payload: { username, response } })
   }
   const logout = () => dispatch({type: 'logout'})
 
