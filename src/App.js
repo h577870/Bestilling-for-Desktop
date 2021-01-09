@@ -44,15 +44,13 @@ const reducer = (state, action) => {
         throw new Error("Ukjent type")
     }
 }
-  
- const init_state = {
-    user: null,
-    hasLoginError: false
-  }
 
 const App = () => {
 
-  const [state, dispatch] = useReducer(reducer, init_state)
+  const [state, dispatch] = useReducer(reducer, {
+    user: null,
+    hasLoginError: false
+  })
 
   const login = async (username, password) => {
     const response = await fetchLogin(username, password)
@@ -85,15 +83,6 @@ const App = () => {
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink exact to="/login"
-                    activeStyle={{
-                      color: "red",
-                      fontWeight: "bold"
-                    }}>
-                    Logg Inn
-                    </NavLink>
-                </li>
-                <li>
                   <NavLink exact to="/app"
                     activeStyle={{
                       color: "red",
@@ -121,6 +110,8 @@ const App = () => {
   );
 }
 
+export default App;
+
 function PrivateRoute({ component: Component, ...rest }) {
 
   const { isLoggedIn } = useContext(AuthContext)
@@ -134,4 +125,3 @@ function PrivateRoute({ component: Component, ...rest }) {
     )} />)
 }
 
-export default App;

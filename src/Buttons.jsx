@@ -1,5 +1,6 @@
 import AuthContext from './context/auth'
 import { useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 
 export function LogoutButton(props) {
 
@@ -13,8 +14,13 @@ export function LogoutButton(props) {
 }
 
 export function LoginButton(props) {
+    let history = useHistory()
+    
+    const handleClick = () => {
+        history.push("/login")
+    }
     return (
-        <button className="login-button" onClick={props.handleClick}>
+        <button className="login-button" onClick={handleClick}>
             Logg inn
         </button>
     )
