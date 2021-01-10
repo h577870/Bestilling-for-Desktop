@@ -23,7 +23,8 @@ const reducer = (state, action) => {
             ...state,
             user: username,
             hasLoginError: false,
-            isLoggedIn: true
+            isLoggedIn: true,
+            token: document.cookie.split('; ').find(row => row.startsWith("jwt")).split('=')[1]
           }
         }
         console.log("Not logged in.")
