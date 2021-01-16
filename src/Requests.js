@@ -1,6 +1,6 @@
 
 export async function fetchLogin(userName, password) {
-    const url = `${URL}bruker/logginn`
+    const url = `http://localhost:8080/bruker/logginn`
     const response = await fetch(url, {
         method: 'POST',
         mode: 'cors',
@@ -16,7 +16,7 @@ export async function fetchLogin(userName, password) {
 }
 
 export async function fetchLogout(userName, token) {
-    const url = `${URL}/bruker/loggut`
+    const url = `http://localhost:8080/bruker/loggut`
     const response = await fetch(url, {
         method: 'POST',
         mode: 'cors',
@@ -29,13 +29,13 @@ export async function fetchLogout(userName, token) {
     return response
 }
 
-export async function get(url, token) {
+export async function get(url) {
     const response = await fetch(url, {
         method: 'GET',
         mode: 'cors',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization':`Bearer ${token}`
+            'Access-Control-Allow-Origin': 'http://localhost:3000',
+            'Content-Type': 'application/json'
         }
     })
     return response

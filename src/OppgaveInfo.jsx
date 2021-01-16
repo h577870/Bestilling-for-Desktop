@@ -1,29 +1,28 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 function Oppgaveinfo(props) {
 
-    const currentTask = props.task
-    const items = currentTask.vareliste
-    const itemlist = items.map((item) =>
-        <li className="taskinfo-item" onClick={(item) => props.onClick(item)}>
-            { item.navn }
-        </li>
-    )
+    const currentTask = useRef(null)
+    const items = useRef(null)
+    const itemlist = items.current
     const render = useCallback(
         () => {
-           if (currentTask !== null) {
+           if (currentTask.current !== null) {
             return (
                 <div className="taskinfo-task">
                     <div className="taskinfo-props">
                         <ul className="taskinfo-propslist">
-                            <li className="props-title">{currentTask.tittel}</li>
-                            <li className="props-description">{currentTask.beskrivels}</li>
-                            <li className="props-type">{currentTask.type}</li>
-                            <li className="props-status">{currentTask.status}</li>
+                            <li className="props-title">{currentTask.current.tittel}</li>
+                            <li className="props-description">{currentTask.current.beskrivelse}</li>
+                            <li className="props-type">{currentTask.current.type}</li>
+                            <li className="props-status">{currentTask.current.status}</li>
                         </ul>
                     </div>
                     <div className="taskinfo-items">
-                        <ul className="taskinfo-itemlist">{itemlist}</ul>
+                        <ul className="taskinfo-itemlist">{
+                            itemlist.map((item) =>
+                                <li className="taskinfo-item" onClick={(item) => props.onClick(item)}>{item.navn}</li>)}
+                        </ul>
                     </div>
                 </div>
             )
@@ -34,13 +33,18 @@ function Oppgaveinfo(props) {
                 </div>
             )
         }
-    }, [currentTask, itemlist])
+    }, [itemlist, props])
 
     useEffect(
         () => {
-            document.title = currentTask.title //Litt testing
+            if (props.task !== null) {
+                currentTask.current = props.task
+            }
+            if (currentTask !== null) {
+                items.current = currentTask.vareliste
+            }
             render()
-        }, [currentTask, render])
+        }, [currentTask, render, props.task])
 
     return (
         render()

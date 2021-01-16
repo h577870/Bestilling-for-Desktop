@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react'
-import SeeItemInfo from './modals/ItemInfo'
+import {SeeItemInfo} from './modals/ItemInfo'
 
 function OppgaveOptions(props) {
 
@@ -51,6 +51,9 @@ function OppgaveOptions(props) {
         () => {
             render()
         }, [task, item, render]
+    )
+    return (
+        render()
     )
 }
 

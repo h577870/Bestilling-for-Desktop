@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useContext } from 'react'
 import { get, put, post } from '../Requests'
-import { AuthContext } from '../context/auth'
+import AuthContext from '../context/auth'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
