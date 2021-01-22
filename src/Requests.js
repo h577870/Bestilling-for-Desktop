@@ -5,7 +5,7 @@ export async function fetchLogin(userName, password) {
         method: 'POST',
         mode: 'cors',
         headers: {
-            'Content-Type':'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             brukernavn: userName,
@@ -22,20 +22,21 @@ export async function fetchLogout(userName, token) {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `${token}`
         },
         body: JSON.stringify(userName)
     })
     return response
 }
 
-export async function get(url) {
+export async function get(url, token) {
     const response = await fetch(url, {
         method: 'GET',
         mode: 'cors',
         headers: {
             'Access-Control-Allow-Origin': 'http://localhost:3000',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `${token}`
         }
     })
     return response
@@ -47,7 +48,7 @@ export async function post(url, token, value) {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization':`Bearer ${token}`
+            'Authorization':`${token}`
         },
         body: JSON.stringify(value)
     })
@@ -60,7 +61,7 @@ export async function put(url, token, value) {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization':`Bearer ${token}`
+            'Authorization':`${token}`
         },
         body: JSON.stringify(value)
     })

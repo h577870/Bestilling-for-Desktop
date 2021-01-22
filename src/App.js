@@ -54,6 +54,10 @@ const App = () => {
 
   const login = async (username, password) => {
     const response = await fetchLogin(username, password)
+    const data = await response.text()
+    if (data != null) {
+      window.sessionStorage.setItem("jwt", data)
+    }
     dispatch({ type: 'login', payload: { username, response } })
   }
   const logout = () => dispatch({type: 'logout'})

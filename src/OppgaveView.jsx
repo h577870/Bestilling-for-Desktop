@@ -6,12 +6,13 @@ function Oppgaveliste(props) {
 
     const url_base = "http://localhost:8080"
     const usercontext = useContext(AuthContext)
-    const [data, setData] = useState([]) 
+    const [data, setData] = useState([])
 
     const fetchTasks = useCallback(
         async (userid) => {
             const url = `${url_base}/oppgave/${userid}`
-            const response = await get(url)
+            const token = window.sessionStorage.getItem("jwt")
+            const response = await get(url, token)
             const data = await response.json()
             setData(data)
         }, []
