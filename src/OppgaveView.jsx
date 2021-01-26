@@ -27,7 +27,7 @@ function Oppgaveliste(props) {
         <ul className="tasklist-list">
             {
                 data.map(task => 
-                <li className="tasklist-task" onClick={(task) => props.onClick(task)}>{ task.tittel }</li>
+                    <li key={ task.oppgaveid } className="tasklist-task" onClick={() => props.onClick(task)}>{ task.tittel }</li>
                 )}
         </ul>
     )

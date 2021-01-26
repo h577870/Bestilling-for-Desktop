@@ -25,12 +25,12 @@ function Application(props) {
             <div className="app-body">
                 <Container className="task-overview">
                     <Col className="task-3">
-                        <Oppgaveliste onClick={setTask}/>
+                        <Oppgaveliste onClick={(task) => setTask(task)}/>
                     </Col>
                 </Container>
                 <Container className="task-info">
                     <Col>
-                        <Oppgaveinfo task={selectedTask} onClick={setItem}/>
+                        <Oppgaveinfo task={selectedTask} onClick={(item) => setItem(item)}/>
                     </Col>
                 </Container>
                 <Container className="task-options">

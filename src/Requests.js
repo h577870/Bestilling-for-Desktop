@@ -47,6 +47,7 @@ export async function post(url, token, value) {
         method: 'POST',
         mode: 'cors',
         headers: {
+            'Access-Control-Allow-Origin': 'http://localhost:3000',
             'Content-Type': 'application/json',
             'Authorization':`${token}`
         },
@@ -60,6 +61,7 @@ export async function put(url, token, value) {
         method: 'PUT',
         mode: 'cors',
         headers: {
+            'Access-Control-Allow-Origin': 'http://localhost:3000',
             'Content-Type': 'application/json',
             'Authorization':`${token}`
         },

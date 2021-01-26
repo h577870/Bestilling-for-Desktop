@@ -7,7 +7,7 @@ function Oppgaveinfo(props) {
     const itemlist = items.current
     const render = useCallback(
         () => {
-           if (currentTask.current !== null) {
+            if (currentTask.current !== null) {
             return (
                 <div className="taskinfo-task">
                     <div className="taskinfo-props">
@@ -21,7 +21,7 @@ function Oppgaveinfo(props) {
                     <div className="taskinfo-items">
                         <ul className="taskinfo-itemlist">{
                             itemlist.map((item) =>
-                                <li className="taskinfo-item" onClick={(item) => props.onClick(item)}>{item.navn}</li>)}
+                                <li key={ item.ean } className="taskinfo-item" onClick={(item) => props.onClick(item)}>{item.navn}</li>)}
                         </ul>
                     </div>
                 </div>
@@ -40,8 +40,9 @@ function Oppgaveinfo(props) {
             if (props.task !== null) {
                 currentTask.current = props.task
             }
-            if (currentTask !== null) {
-                items.current = currentTask.vareliste
+            if (currentTask.current !== null) {
+                items.current = currentTask.current.vareliste.json()
+                console.log(typeof items.current)
             }
             render()
         }, [currentTask, render, props.task])
